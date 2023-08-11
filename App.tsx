@@ -13,7 +13,11 @@ function App(): JSX.Element {
     <NavigationContainer>
       <BeersProvider>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen
+            options={{headerShown: false}}
+            name="Home"
+            component={Home}
+          />
           <Stack.Screen name="Details" component={Details} />
         </Stack.Navigator>
       </BeersProvider>

@@ -1,49 +1,36 @@
-import React, {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
-import {Search, ListFilter, ChevronsUpDown} from 'lucide-react-native';
+import React, {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+import {ListFilter, ChevronsUpDown} from 'lucide-react-native';
 import {List} from '../components/List';
-import {useRef, useState} from 'react';
+import {useRef} from 'react';
 
 import BottomSheet from '@gorhom/bottom-sheet';
 import {Filters} from '../components/Filters';
 import {Button} from 'tamagui';
 
 export const HomeScreen = () => {
-  const [search, setSearch] = useState('');
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   return (
     <SafeAreaView>
       <View style={styles.filters}>
-        <View style={styles.searchBox}>
-          <Search color="#545454" size={24} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search..."
-            value={search}
-            onChangeText={query => setSearch(query)}
-          />
-        </View>
         <View style={styles.filtersButtons}>
-          <TouchableWithoutFeedback
+          <Button
+            color="white"
+            backgroundColor="black"
+            fontSize={16}
+            size="$5"
+            flex={1}
+            icon={<ChevronsUpDown color="#fff" size={22} />}
+            alignItems="center"
             onPress={() => {
               bottomSheetRef.current?.expand();
             }}>
-            <View style={styles.button}>
-              <ChevronsUpDown color="#656363" size={22} />
-              <Text style={styles.buttonText}>Sort by</Text>
-            </View>
-          </TouchableWithoutFeedback>
+            Sorty by
+          </Button>
+
           <Button
             color="white"
-            backgroundColor="darkgray"
+            backgroundColor="black"
             fontSize={16}
             size="$5"
             flex={1}
@@ -69,7 +56,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 42,
     paddingTop: StatusBar.currentHeight || 12,
     paddingBottom: StatusBar.currentHeight || 12,
-    backgroundColor: '#ececec',
   },
   filtersButtons: {
     justifyContent: 'center',

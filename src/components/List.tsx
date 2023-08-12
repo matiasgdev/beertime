@@ -2,14 +2,15 @@ import {useNavigation} from '@react-navigation/native';
 import {FC, PropsWithChildren} from 'react';
 import React, {
   FlatList,
-  Image,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
   View,
+  Image,
 } from 'react-native';
+
 import {Beer} from '../models/Beer';
 import {useStore} from '../store/BeerStore';
 
@@ -40,6 +41,7 @@ export const List = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
+        showsVerticalScrollIndicator={false}
         numColumns={2}
         data={beers}
         renderItem={({item}) => <Item {...item} />}

@@ -16,13 +16,13 @@ export const SearchBy = () => {
             alignItems="center"
             space="$2"
             marginBottom={12}>
-            <RadioGroupItemWithLabel size="$4" value="1" label="Beer name" />
-            <RadioGroupItemWithLabel size="$4" value="2" label="Yeast" />
+            <RadioGroupItemWithLabel size="$3" value="1" label="Beer name" />
+            <RadioGroupItemWithLabel size="$3" value="2" label="Yeast" />
           </YStack>
           <YStack flexDirection="row" alignItems="center" space="$2">
-            <RadioGroupItemWithLabel size="$4" value="3" label="Hops" />
-            <RadioGroupItemWithLabel size="$4" value="4" label="Malt" />
-            <RadioGroupItemWithLabel size="$4" value="5" label="Food" />
+            <RadioGroupItemWithLabel size="$3" value="3" label="Hops" />
+            <RadioGroupItemWithLabel size="$3" value="4" label="Malt" />
+            <RadioGroupItemWithLabel size="$3" value="5" label="Food" />
           </YStack>
         </RadioGroup>
       </ScrollView>

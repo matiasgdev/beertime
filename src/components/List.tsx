@@ -21,15 +21,17 @@ const Item: FC<PropsWithChildren<Beer>> = ({name, image_url}) => {
   };
 
   return (
-    <View style={styles.card}>
-      <Image
-        style={styles.image}
-        source={{
-          uri: image_url,
-        }}
-      />
-      <Text style={styles.title}>{name}</Text>
-    </View>
+    <TouchableWithoutFeedback onPress={onSelect}>
+      <View style={styles.card}>
+        <Image
+          style={styles.image}
+          source={{
+            uri: image_url,
+          }}
+        />
+        <Text style={styles.title}>{name}</Text>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

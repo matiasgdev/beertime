@@ -4,15 +4,20 @@ import React, {
   StyleSheet,
   Text,
   TextInput,
-  TouchableHighlight,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {Search, ListFilter, ChevronsUpDown} from 'lucide-react-native';
 import {List} from '../components/List';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 
-export const Home = () => {
+import BottomSheet from '@gorhom/bottom-sheet';
+import {Filters} from '../components/Filters';
+import {Button} from 'tamagui';
+
+export const HomeScreen = () => {
   const [search, setSearch] = useState('');
+  const bottomSheetRef = useRef<BottomSheet>(null);
 
   return (
     <SafeAreaView>
@@ -27,21 +32,34 @@ export const Home = () => {
           />
         </View>
         <View style={styles.filtersButtons}>
-          <TouchableHighlight style={styles.buttonContainer}>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              bottomSheetRef.current?.expand();
+            }}>
             <View style={styles.button}>
               <ChevronsUpDown color="#656363" size={22} />
               <Text style={styles.buttonText}>Sort by</Text>
             </View>
-          </TouchableHighlight>
-          <TouchableHighlight style={styles.buttonContainer}>
-            <View style={styles.button}>
-              <ListFilter color="#656363" size={22} />
-              <Text style={styles.buttonText}>Filter</Text>
-            </View>
-          </TouchableHighlight>
+          </TouchableWithoutFeedback>
+          <Button
+            color="white"
+            backgroundColor="darkgray"
+            fontSize={16}
+            size="$5"
+            flex={1}
+            icon={<ListFilter color="#fff" size={22} />}
+            alignItems="center"
+            onPress={() => {
+              bottomSheetRef.current?.expand();
+            }}>
+            Filter
+          </Button>
         </View>
       </View>
       <List />
+      <BottomSheet ref={bottomSheetRef} snapPoints={['1%', '65%']}>
+        <Filters />
+      </BottomSheet>
     </SafeAreaView>
   );
 };
@@ -71,10 +89,8 @@ const styles = StyleSheet.create({
     borderColor: '#b7b7b7',
     borderRadius: 24,
   },
-  buttonContainer: {
-    flex: 1,
-  },
   button: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

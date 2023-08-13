@@ -47,7 +47,7 @@ interface BeerStoreState {
 const Beers = createContext<BeerStoreState | null>(null);
 
 export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
-  const [beers, setState] = useState<Beer[]>([]);
+  const [beers, setBeers] = useState<Beer[]>([]);
   const [globalQuery, setGlobalQuery] = useState('');
   const debouncedQuery = useDebouncedValue(globalQuery, 500);
 
@@ -59,9 +59,9 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
   const {run, status, data} = useAsync<Beer[]>([], {
     onSuccess: beers => {
       if (filters.page === 1) {
-        return setState(beers);
+        return setBeers(beers);
       }
-      setState(previousBeers => [...previousBeers, ...beers]);
+      setBeers(previousBeers => [...previousBeers, ...beers]);
     },
   });
 

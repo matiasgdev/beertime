@@ -9,9 +9,10 @@ import {GlobalFilters} from '../components/filters/GlobalFilters';
 import {Button, XStack} from 'tamagui';
 import {darkColors} from '@tamagui/themes';
 import {InputSearch} from '../components/common/InputSearch';
+import {useStore} from '../store/BeerStore';
 
 export const HomeScreen = () => {
-  const [query, setQuery] = useState('');
+  const {globalQuery, setGlobalQuery} = useStore();
   const $refSheet = useRef<BottomSheet>(null);
 
   return (
@@ -20,7 +21,11 @@ export const HomeScreen = () => {
         justifyContent="center"
         marginTop={StatusBar.currentHeight || 12}
         paddingHorizontal={38}>
-        <InputSearch flex={1} marginRight={16} {...{query, setQuery}} />
+        <InputSearch
+          flex={1}
+          marginRight={16}
+          {...{query: globalQuery, setQuery: setGlobalQuery}}
+        />
         <Button
           size="$4"
           width={48}

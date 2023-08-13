@@ -1,13 +1,18 @@
 import React, {
   createContext,
+  Dispatch,
   PropsWithChildren,
+  SetStateAction,
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useReducer,
   useState,
 } from 'react';
 import {useAsync} from '../hooks/useAsync';
+import {useDebouncedValue} from '../hooks/useDebouncedValue';
+import {filterByName} from '../lib/filterByName';
 import {Beer} from '../models/Beer';
 import {BeerParams} from '../models/BeerParams';
 import {getBeers} from '../services/get-beers';
@@ -18,6 +23,8 @@ interface BeerStoreState {
   beers: Beer[];
   filters: Partial<BeerParams>;
   query: string;
+  globalQuery: string;
+  setGlobalQuery: Dispatch<SetStateAction<string>>;
   refetch: (filtres: Partial<BeerParams>) => void;
   dispatch: React.Dispatch<
     {
@@ -40,7 +47,10 @@ interface BeerStoreState {
 const Beers = createContext<BeerStoreState | null>(null);
 
 export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
-  const [state, setState] = useState<Beer[]>([]);
+  const [beers, setState] = useState<Beer[]>([]);
+  const [globalQuery, setGlobalQuery] = useState('');
+  const debouncedQuery = useDebouncedValue(globalQuery, 500);
+
   const [filters, dispatch] = useReducer(
     filtersReducer,
     defaultFilters as BeerParams,
@@ -70,15 +80,22 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
+  const filteredBeers = useMemo(
+    () => filterByName(beers, debouncedQuery),
+    [beers, debouncedQuery],
+  );
+
   return (
     <Beers.Provider
       value={{
-        status: state.length && status === 'pending' ? 'refetching' : status,
-        beers: state,
+        status: beers.length && status === 'pending' ? 'refetching' : status,
+        beers: filteredBeers,
         filters,
         dispatch,
         refetch,
         query,
+        globalQuery,
+        setGlobalQuery,
         reachLimit,
       }}>
       {children}

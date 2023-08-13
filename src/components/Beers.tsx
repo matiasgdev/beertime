@@ -14,23 +14,24 @@ import {Title} from './common/Title';
 import {Beer} from '../models/Beer';
 
 export const Beers = () => {
-  const {beers, status, dispatch, reachLimit} = useStore();
+  const {beers, status, dispatch, reachLimit, globalQuery} = useStore();
 
-  const footer = reachLimit ? null : (
-    <Button
-      disabled={status === 'pending' || status === 'refetching'}
-      marginTop={16}
-      minWidth={110}
-      onPress={() => {
-        dispatch({type: 'set_page'});
-      }}>
-      {status === 'refetching' ? (
-        <ActivityIndicator color="#fff" />
-      ) : (
-        'Load more'
-      )}
-    </Button>
-  );
+  const footer =
+    reachLimit || globalQuery ? null : (
+      <Button
+        disabled={status === 'pending' || status === 'refetching'}
+        marginTop={16}
+        minWidth={110}
+        onPress={() => {
+          dispatch({type: 'set_page'});
+        }}>
+        {status === 'refetching' ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          'Load more'
+        )}
+      </Button>
+    );
 
   return (
     <SafeAreaView style={styles.container}>

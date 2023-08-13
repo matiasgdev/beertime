@@ -10,31 +10,41 @@ import {useAsync} from '../hooks/useAsync';
 import {Beer} from '../models/Beer';
 import {BeerParams} from '../models/BeerParams';
 import {getBeers} from '../services/get-beers';
+import {defaultFilters, filtersReducer} from './filtersReducer';
 
 interface BeerStoreState {
   status: 'idle' | 'pending' | 'resolved' | 'rejected';
   beers: Beer[];
   filters: Partial<BeerParams>;
+  query: string;
   refetch: (filtres: Partial<BeerParams>) => void;
-  setFilters: (newFilter: Partial<BeerParams>) => void;
+  dispatch: React.Dispatch<
+    {
+      type:
+        | 'yeast'
+        | 'hops'
+        | 'malt'
+        | 'food'
+        | 'abv'
+        | 'ibu'
+        | 'ebc'
+        | 'beer_name'
+        | 'reset';
+    } & Partial<BeerParams>
+  >;
 }
-
-const filterReducer = (
-  prevParams: Partial<BeerParams>,
-  newParams: Partial<BeerParams>,
-) => ({...prevParams, ...newParams});
-
-export const defaultFilters: Partial<BeerParams> = {
-  abv_gt: 0,
-  ibu_gt: 0,
-  ebc_gt: 0,
-};
 
 const Beers = createContext<BeerStoreState | null>(null);
 
 export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
   const {data: beers, run, status} = useAsync<Beer[]>([]);
-  const [filters, setFilters] = useReducer(filterReducer, defaultFilters);
+  const [filters, dispatch] = useReducer(
+    filtersReducer,
+    defaultFilters as BeerParams,
+  );
+  const {beer_name, yeast, hops, malt, food} = filters;
+
+  const query = beer_name || yeast || hops || malt || food;
 
   const refetch = useCallback((params: Partial<BeerParams>) => {
     run(getBeers(params));
@@ -52,8 +62,9 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
         status,
         beers,
         filters,
-        setFilters,
+        dispatch,
         refetch,
+        query,
       }}>
       {children}
     </Beers.Provider>

@@ -1,8 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
-import {darkColors} from '@tamagui/themes';
-import {BeerIcon} from 'lucide-react-native';
+import {darkColors, lightColors} from '@tamagui/themes';
+import {BeerIcon, ShoppingCart} from 'lucide-react-native';
 
-import {FC} from 'react';
 import React, {
   FlatList,
   SafeAreaView,
@@ -17,10 +16,37 @@ import {getVolumeUnit} from '../lib/getVolumeUnit';
 import {Beer} from '../models/Beer';
 import {useStore} from '../store/BeerStore';
 import {EmtpyState} from './EmptyState';
-import {Skeletons} from './SkeletonCard';
-import {Title} from './Title';
+import {Skeletons} from './common/SkeletonCard';
+import {Title} from './common/Title';
 
-const Item: FC<Beer> = beer => {
+export const Beers = () => {
+  const {beers, status} = useStore();
+  return (
+    <SafeAreaView style={styles.container}>
+      {status === 'pending' ? (
+        <Skeletons />
+      ) : beers.length ? (
+        <FlatList
+          contentContainerStyle={{
+            paddingBottom: 86,
+            paddingVertical: 24,
+            width: Dimensions.get('screen').width,
+            alignItems: 'center',
+          }}
+          showsVerticalScrollIndicator={false}
+          numColumns={2}
+          data={beers}
+          renderItem={({item}) => <Item {...item} />}
+          keyExtractor={item => item.id.toString()}
+        />
+      ) : (
+        <EmtpyState />
+      )}
+    </SafeAreaView>
+  );
+};
+
+function Item(beer: Beer) {
   const {id, name, image_url, volume, abv, ph} = beer;
   const {navigate} = useNavigation();
 
@@ -29,11 +55,23 @@ const Item: FC<Beer> = beer => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={onSelect}>
+    <TouchableWithoutFeedback onPress={onSelect} style={{position: 'relative'}}>
       <Animated.View
         entering={FadeInUp}
         style={styles.card}
         sharedTransitionTag={`card-${id}`}>
+        <XStack
+          position="absolute"
+          bottom={-12}
+          padding={8}
+          borderRadius={16}
+          backgroundColor={darkColors.orange10}
+          shadowColor={darkColors.gray1}
+          shadowOffset={{width: 8, height: 8}}
+          shadowOpacity={0.6}
+          elevation={24}>
+          <ShoppingCart size={14} color="white" />
+        </XStack>
         <Title
           label={name}
           paddingHorizontal={4}
@@ -64,7 +102,7 @@ const Item: FC<Beer> = beer => {
             borderRadius={12}
             columnGap={4}
             alignItems="center"
-            backgroundColor={darkColors.orange11}>
+            backgroundColor={lightColors.orange8}>
             <BeerIcon color="white" size={12} />
             <Paragraph fontSize={12}>{abv}</Paragraph>
           </XStack>
@@ -94,34 +132,7 @@ const Item: FC<Beer> = beer => {
       </Animated.View>
     </TouchableWithoutFeedback>
   );
-};
-
-export const List = () => {
-  const {beers, status} = useStore();
-  return (
-    <SafeAreaView style={styles.container}>
-      {status === 'pending' ? (
-        <Skeletons />
-      ) : beers.length ? (
-        <FlatList
-          contentContainerStyle={{
-            paddingBottom: 86,
-            paddingVertical: 24,
-            width: Dimensions.get('screen').width,
-            alignItems: 'center',
-          }}
-          showsVerticalScrollIndicator={false}
-          numColumns={2}
-          data={beers}
-          renderItem={({item}) => <Item {...item} />}
-          keyExtractor={item => item.id.toString()}
-        />
-      ) : (
-        <EmtpyState />
-      )}
-    </SafeAreaView>
-  );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -136,6 +147,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 8,
     margin: 8,
+    marginBottom: 12,
     borderWidth: 0.5,
     borderColor: '#e0e0e0',
     backgroundColor: '#f5f5f5',
@@ -146,9 +158,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 36,
-  },
-  title: {
-    textAlign: 'center',
-    marginTop: 8,
   },
 });

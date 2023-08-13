@@ -1,4 +1,4 @@
-import React, {StyleSheet} from 'react-native';
+import React from 'react-native';
 import {Paragraph, Slider, SliderProps, XStack, YStack} from 'tamagui';
 
 import {darkColors, lightColors} from '@tamagui/themes';
@@ -21,7 +21,7 @@ export function SliderTrack({
         {title} ({volume})
       </Paragraph>
       <XStack flex={1} alignItems="center" space="$2">
-        <SimpleSlider
+        <Slide
           width={200}
           {...{...props, max}}
           onValueChange={v => setVolume(v[0])}
@@ -31,7 +31,7 @@ export function SliderTrack({
   );
 }
 
-function SimpleSlider({children, max, ...props}: SliderProps) {
+function Slide({children, max, ...props}: SliderProps) {
   return (
     <Slider defaultValue={[0]} max={max} step={1} {...props}>
       <Slider.Track backgroundColor={lightColors.gray8}>

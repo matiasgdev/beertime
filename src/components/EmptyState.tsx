@@ -2,7 +2,7 @@ import {darkColors} from '@tamagui/themes';
 import React from 'react';
 import {Paragraph, YStack} from 'tamagui';
 
-import {ResetFiltersButton} from './ResetButton';
+import {ResetFiltersButton} from './common/ResetButton';
 
 export function EmtpyState() {
   return (

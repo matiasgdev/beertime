@@ -1,23 +1,24 @@
 import React, {FC, useState} from 'react';
 import {Button, Input, XStack, YStack} from 'tamagui';
-import {colorTokens} from '@tamagui/themes';
+import {colorTokens, darkColors} from '@tamagui/themes';
 import {Search} from 'lucide-react-native';
 import {NativeViewGestureHandler} from 'react-native-gesture-handler';
-import {SearchBy} from './Filters/SearchBy';
-import {SliderTrack} from './Slider';
-import {Title} from './Title';
-import {useStore} from '../store/BeerStore';
-import {MAX_ABV, MAX_EBC, MAX_IBU} from '../const/measurements';
-import {ResetFiltersButton} from './ResetButton';
+import {SearchBy} from './SearchBy';
+import {SliderTrack} from './SliderTrack';
+import {Title} from '../common/Title';
+import {useStore} from '../../store/BeerStore';
+import {MAX_ABV, MAX_EBC, MAX_IBU} from '../../const/measurements';
+import {ResetFiltersButton} from '../common/ResetButton';
+import {InputSearch} from '../common/InputSearch';
 
-interface FiltersProps {
+interface GlobalFiltersProps {
   toggleBottomSheet: () => void;
 }
 
-export const Filters: FC<FiltersProps> = ({toggleBottomSheet}) => {
+export const GlobalFilters: FC<GlobalFiltersProps> = ({toggleBottomSheet}) => {
   const {filters, setFilters, refetch} = useStore();
   const {abv_gt, ebc_gt, ibu_gt} = filters;
-  const [search, setSearch] = useState('');
+  const [query, setQuery] = useState('');
 
   const setABV = (v: number) => setFilters({abv_gt: v});
   const setIBU = (v: number) => setFilters({ibu_gt: v});
@@ -62,29 +63,13 @@ export const Filters: FC<FiltersProps> = ({toggleBottomSheet}) => {
         <YStack marginTop={12} paddingHorizontal={16}>
           <SearchBy />
         </YStack>
-        <YStack
-          flexDirection="row"
-          justifyContent="flex-start"
-          alignItems="center"
-          borderWidth={0.5}
-          paddingVertical={8}
-          paddingHorizontal={12}
-          height={48}
+        <InputSearch
+          {...{query, setQuery}}
+          marginTop={16}
           marginHorizontal={16}
-          marginTop={12}
-          borderColor={colorTokens.dark.gray.gray6}
-          borderRadius={24}>
-          <Search color={colorTokens.dark.gray.gray6} size={24} />
-          <Input
-            unstyled
-            height={48}
-            paddingLeft={16}
-            color="black"
-            placeholder="Search..."
-            value={search}
-            onChangeText={query => setSearch(query)}
-          />
-        </YStack>
+          borderColor={colorTokens.dark.gray.gray12}
+          borderWidth={1}
+        />
         <YStack marginTop={36} paddingHorizontal={16}>
           <Button
             size="$5"

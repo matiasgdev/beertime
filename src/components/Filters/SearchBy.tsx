@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 
 import {Label, RadioGroup, SizeTokens, XStack, YStack} from 'tamagui';
-import {Title} from '../Title';
+import {Title} from '../common/Title';
 
 export const SearchBy = () => {
   return (

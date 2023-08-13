@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import {useCallback, useReducer, useRef} from 'react';
+import {Beer} from '../models/Beer';
 
 interface State<T = any> {
-  status: 'idle' | 'pending' | 'resolved' | 'rejected';
+  status: 'idle' | 'pending' | 'resolved' | 'rejected' | 'refetching';
   data: T;
   error: Error | null;
 }
@@ -19,7 +20,7 @@ const defaultInitialState: State = {
   error: null,
 };
 
-export function useAsync<T = any>(initialState: T, opts: Options<T> = {}) {
+export function useAsync<T = Beer[]>(initialState: T, opts: Options<T> = {}) {
   const initialStateRef = useRef({
     ...defaultInitialState,
     data: initialState,
@@ -33,6 +34,7 @@ export function useAsync<T = any>(initialState: T, opts: Options<T> = {}) {
     (data: T) => setState({data, status: 'resolved'}),
     [setState],
   );
+
   const setError = useCallback(
     (error: Error) => setState({error, status: 'rejected'}),
     [setState],
@@ -47,7 +49,9 @@ export function useAsync<T = any>(initialState: T, opts: Options<T> = {}) {
       if (!promise || !promise.then) {
         throw new Error('The argument passed must be a promise.');
       }
+
       setState({status: 'pending'});
+
       return promise.then(
         (data: T) => {
           setData(data);

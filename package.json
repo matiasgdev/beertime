@@ -17,6 +17,7 @@
     "@tamagui/react-native-media-driver": "^1.52.2",
     "@tamagui/shorthands": "^1.52.2",
     "@tamagui/themes": "^1.52.2",
+    "@types/throttle-debounce": "^5.0.0",
     "add": "^2.0.6",
     "axios": "^1.4.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",

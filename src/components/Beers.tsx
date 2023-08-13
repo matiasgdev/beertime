@@ -1,26 +1,37 @@
-import {useNavigation} from '@react-navigation/native';
+import {ActivityIndicator, StyleSheet} from 'react-native';
 import {darkColors, lightColors} from '@tamagui/themes';
 import {BeerIcon, ShoppingCart} from 'lucide-react-native';
 
-import React, {
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Dimensions,
-} from 'react-native';
+import React, {FlatList, SafeAreaView, Dimensions} from 'react-native';
 import Animated, {FadeInUp} from 'react-native-reanimated';
-import {Paragraph, XStack, Image} from 'tamagui';
+import {Paragraph, XStack, Image, Button} from 'tamagui';
 import {getVolumeUnit} from '../lib/getVolumeUnit';
 
-import {Beer} from '../models/Beer';
 import {useStore} from '../store/BeerStore';
 import {EmtpyState} from './EmptyState';
 import {Skeletons} from './common/SkeletonCard';
 import {Title} from './common/Title';
+import {Beer} from '../models/Beer';
 
 export const Beers = () => {
-  const {beers, status} = useStore();
+  const {beers, status, dispatch, reachLimit} = useStore();
+
+  const footer = reachLimit ? null : (
+    <Button
+      disabled={status === 'pending' || status === 'refetching'}
+      marginTop={16}
+      minWidth={110}
+      onPress={() => {
+        dispatch({type: 'set_page'});
+      }}>
+      {status === 'refetching' ? (
+        <ActivityIndicator color="#fff" />
+      ) : (
+        'Load more'
+      )}
+    </Button>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       {status === 'pending' ? (
@@ -38,6 +49,8 @@ export const Beers = () => {
           data={beers}
           renderItem={({item}) => <Item {...item} />}
           keyExtractor={item => item.id.toString()}
+          ListFooterComponent={footer}
+          refreshing={status === 'refetching'}
         />
       ) : (
         <EmtpyState />
@@ -48,14 +61,9 @@ export const Beers = () => {
 
 function Item(beer: Beer) {
   const {id, name, image_url, volume, abv, ph} = beer;
-  const {navigate} = useNavigation();
-
-  const onSelect = () => {
-    navigate('Details');
-  };
 
   return (
-    <TouchableWithoutFeedback onPress={onSelect} style={{position: 'relative'}}>
+    <XStack style={{position: 'relative'}}>
       <Animated.View
         entering={FadeInUp}
         style={styles.card}
@@ -130,7 +138,7 @@ function Item(beer: Beer) {
           </Paragraph>
         </XStack>
       </Animated.View>
-    </TouchableWithoutFeedback>
+    </XStack>
   );
 }
 

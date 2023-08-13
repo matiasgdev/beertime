@@ -5,15 +5,16 @@ import React, {
   useContext,
   useEffect,
   useReducer,
+  useState,
 } from 'react';
 import {useAsync} from '../hooks/useAsync';
 import {Beer} from '../models/Beer';
 import {BeerParams} from '../models/BeerParams';
 import {getBeers} from '../services/get-beers';
-import {defaultFilters, filtersReducer} from './filtersReducer';
+import {defaultFilters, filtersReducer, PAGE_OFFSET} from './filtersReducer';
 
 interface BeerStoreState {
-  status: 'idle' | 'pending' | 'resolved' | 'rejected';
+  status: 'idle' | 'pending' | 'resolved' | 'rejected' | 'refetching';
   beers: Beer[];
   filters: Partial<BeerParams>;
   query: string;
@@ -21,6 +22,7 @@ interface BeerStoreState {
   dispatch: React.Dispatch<
     {
       type:
+        | 'set_page'
         | 'yeast'
         | 'hops'
         | 'malt'
@@ -32,18 +34,30 @@ interface BeerStoreState {
         | 'reset';
     } & Partial<BeerParams>
   >;
+  reachLimit: boolean;
 }
 
 const Beers = createContext<BeerStoreState | null>(null);
 
 export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
-  const {data: beers, run, status} = useAsync<Beer[]>([]);
+  const [state, setState] = useState<Beer[]>([]);
   const [filters, dispatch] = useReducer(
     filtersReducer,
     defaultFilters as BeerParams,
   );
-  const {beer_name, yeast, hops, malt, food} = filters;
 
+  const {run, status, data} = useAsync<Beer[]>([], {
+    onSuccess: beers => {
+      if (filters.page === 1) {
+        return setState(beers);
+      }
+      setState(previousBeers => [...previousBeers, ...beers]);
+    },
+  });
+
+  const reachLimit = Boolean(data.length < PAGE_OFFSET);
+
+  const {beer_name, yeast, hops, malt, food, page} = filters;
   const query = beer_name || yeast || hops || malt || food;
 
   const refetch = useCallback((params: Partial<BeerParams>) => {
@@ -52,19 +66,20 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
   }, []);
 
   useEffect(() => {
-    run(getBeers());
+    run(getBeers(filters));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page]);
 
   return (
     <Beers.Provider
       value={{
-        status,
-        beers,
+        status: state.length && status === 'pending' ? 'refetching' : status,
+        beers: state,
         filters,
         dispatch,
         refetch,
         query,
+        reachLimit,
       }}>
       {children}
     </Beers.Provider>

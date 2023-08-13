@@ -1,7 +1,10 @@
 import {BeerParams} from '../models/BeerParams';
 
+export const PAGE_OFFSET = 10;
+
 export type Action = {
   type:
+    | 'set_page'
     | 'abv'
     | 'ibu'
     | 'ebc'
@@ -26,6 +29,8 @@ export const defaultFilters: Partial<BeerParams> = {
   abv_gt: 0,
   ibu_gt: 0,
   ebc_gt: 0,
+  page: 1,
+  per_page: PAGE_OFFSET,
   ...defaultQuerySearch,
 };
 
@@ -34,6 +39,9 @@ export const filtersReducer = (
   {type, ...payload}: Action,
 ): BeerParams => {
   switch (type) {
+    case 'set_page': {
+      return {...state, page: state.page + 1};
+    }
     case 'abv': {
       return {...state, abv_gt: payload.abv_gt!};
     }
@@ -60,6 +68,6 @@ export const filtersReducer = (
       return defaultFilters as BeerParams;
     }
     default:
-      throw defaultFilters;
+      return defaultFilters as BeerParams;
   }
 };

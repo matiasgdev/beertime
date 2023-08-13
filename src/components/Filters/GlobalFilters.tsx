@@ -25,7 +25,7 @@ export const GlobalFilters: FC<GlobalFiltersProps> = ({toggleBottomSheet}) => {
   };
 
   const handleOnShow = () => {
-    refetch(filters);
+    refetch({...filters, page: 1});
     toggleBottomSheet();
   };
 

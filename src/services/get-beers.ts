@@ -11,7 +11,6 @@ export const getBeers = async (params: Partial<BeerParams> = {}) => {
   const url = getBaseURL();
   const query = buildQueryParams(params).toString();
 
-  console.log(query.toString());
   if (cache[query]) {
     return cache[query];
   }

@@ -12,6 +12,7 @@ export interface Beer {
   ebc: number;
   srm: number;
   ph: number;
+  attenuation_level: number;
   volume: Measurement;
   boil_volume: Measurement;
   method: {
@@ -29,7 +30,7 @@ export interface Beer {
   contributed_by: string;
 }
 
-interface Measurement {
+export interface Measurement {
   value: number;
   unit: string;
 }

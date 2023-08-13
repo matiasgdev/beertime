@@ -6,13 +6,13 @@ import {FC} from 'react';
 import React, {
   FlatList,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   TouchableWithoutFeedback,
-  Image,
+  Dimensions,
 } from 'react-native';
 import Animated, {FadeInUp} from 'react-native-reanimated';
-import {Paragraph, XStack} from 'tamagui';
+import {Paragraph, XStack, Image} from 'tamagui';
+import {getVolumeUnit} from '../lib/getVolumeUnit';
 
 import {Beer} from '../models/Beer';
 import {useStore} from '../store/BeerStore';
@@ -21,7 +21,7 @@ import {Skeletons} from './SkeletonCard';
 import {Title} from './Title';
 
 const Item: FC<Beer> = beer => {
-  const {id, name, image_url, volume, abv} = beer;
+  const {id, name, image_url, volume, abv, ph} = beer;
   const {navigate} = useNavigation();
 
   const onSelect = () => {
@@ -42,7 +42,11 @@ const Item: FC<Beer> = beer => {
           marginBottom={8}
         />
         <Image
-          style={styles.image}
+          flexGrow={1}
+          marginVertical={12}
+          height={100}
+          width={150}
+          resizeMode="center"
           source={{
             uri: image_url,
           }}
@@ -52,8 +56,7 @@ const Item: FC<Beer> = beer => {
           flex={1}
           alignItems="flex-end"
           justifyContent="space-between"
-          columnGap={4}
-          paddingHorizontal={8}
+          paddingHorizontal={16}
           marginTop={8}>
           <XStack
             paddingHorizontal={8}
@@ -68,12 +71,25 @@ const Item: FC<Beer> = beer => {
           <Paragraph
             paddingHorizontal={8}
             paddingVertical={2}
-            color={darkColors.gray12}
-            borderRadius={12}
-            backgroundColor="black"
-            fontSize={12}>{`${volume.value}${volume.unit
-            .at(0)
-            ?.toUpperCase()}`}</Paragraph>
+            color={darkColors.gray1}
+            fontWeight="bold"
+            fontSize={12}>
+            {`${ph}Ph`}
+          </Paragraph>
+        </XStack>
+        <XStack
+          width={160}
+          flex={1}
+          alignItems="flex-start"
+          justifyContent="flex-end"
+          paddingHorizontal={16}>
+          <Paragraph
+            paddingHorizontal={8}
+            paddingVertical={2}
+            color={darkColors.gray2}
+            fontSize={12}>
+            {getVolumeUnit(volume)}
+          </Paragraph>
         </XStack>
       </Animated.View>
     </TouchableWithoutFeedback>
@@ -88,6 +104,12 @@ export const List = () => {
         <Skeletons />
       ) : beers.length ? (
         <FlatList
+          contentContainerStyle={{
+            paddingBottom: 86,
+            paddingVertical: 24,
+            width: Dimensions.get('screen').width,
+            alignItems: 'center',
+          }}
           showsVerticalScrollIndicator={false}
           numColumns={2}
           data={beers}
@@ -105,30 +127,25 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     alignItems: 'center',
-    marginTop: StatusBar.currentHeight || 8,
+    marginTop: 16,
   },
   card: {
     justifyContent: 'center',
     alignItems: 'center',
     width: 160,
-    paddingVertical: 12,
+    paddingTop: 16,
+    paddingBottom: 8,
     margin: 8,
     borderWidth: 0.5,
     borderColor: '#e0e0e0',
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
     borderRadius: 8,
     position: 'relative',
-    shadowColor: '#9d9d9d',
-    shadowOffset: {width: 4, height: 4},
-    shadowOpacity: 0.8,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  image: {
-    flexGrow: 1,
-    height: 100,
-    width: 150,
-    resizeMode: 'contain',
+    shadowColor: '#7b7b7b',
+    shadowOffset: {width: 6, height: 6},
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 36,
   },
   title: {
     textAlign: 'center',

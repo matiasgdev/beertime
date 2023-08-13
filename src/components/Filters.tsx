@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {Button, Input, YStack} from 'tamagui';
+import {Button, Input, XStack, YStack} from 'tamagui';
 import {colorTokens} from '@tamagui/themes';
 import {Search} from 'lucide-react-native';
 import {NativeViewGestureHandler} from 'react-native-gesture-handler';
@@ -8,13 +8,14 @@ import {SliderTrack} from './Slider';
 import {Title} from './Title';
 import {useStore} from '../store/BeerStore';
 import {MAX_ABV, MAX_EBC, MAX_IBU} from '../const/measurements';
+import {ResetFiltersButton} from './ResetButton';
 
 interface FiltersProps {
   toggleBottomSheet: () => void;
 }
 
 export const Filters: FC<FiltersProps> = ({toggleBottomSheet}) => {
-  const {filters, setFilters, call} = useStore();
+  const {filters, setFilters, refetch} = useStore();
   const {abv_gt, ebc_gt, ibu_gt} = filters;
   const [search, setSearch] = useState('');
 
@@ -23,13 +24,16 @@ export const Filters: FC<FiltersProps> = ({toggleBottomSheet}) => {
   const setEBC = (v: number) => setFilters({ebc_gt: v});
 
   const handleOnShow = () => {
-    call(filters);
+    refetch(filters);
     toggleBottomSheet();
   };
 
   return (
     <NativeViewGestureHandler disallowInterruption={true}>
-      <YStack>
+      <YStack position="relative">
+        <XStack justifyContent="flex-end" paddingRight={16}>
+          <ResetFiltersButton title="Reset filters" />
+        </XStack>
         <YStack
           borderBottomColor={colorTokens.dark.gray.gray12}
           borderBottomWidth={1}

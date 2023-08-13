@@ -15,7 +15,7 @@ interface BeerStoreState {
   status: 'idle' | 'pending' | 'resolved' | 'rejected';
   beers: Beer[];
   filters: Partial<BeerParams>;
-  call: (filtres: Partial<BeerParams>) => void;
+  refetch: (filtres: Partial<BeerParams>) => void;
   setFilters: (newFilter: Partial<BeerParams>) => void;
 }
 
@@ -36,7 +36,7 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
   const {data: beers, run, status} = useAsync<Beer[]>([]);
   const [filters, setFilters] = useReducer(filterReducer, defaultFilters);
 
-  const call = useCallback((params: Partial<BeerParams>) => {
+  const refetch = useCallback((params: Partial<BeerParams>) => {
     run(getBeers(params));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -53,7 +53,7 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
         beers,
         filters,
         setFilters,
-        call,
+        refetch,
       }}>
       {children}
     </Beers.Provider>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {FC, useState} from 'react';
 import {Button, Input, YStack} from 'tamagui';
 import {colorTokens} from '@tamagui/themes';
 import {Search} from 'lucide-react-native';
@@ -6,12 +6,26 @@ import {NativeViewGestureHandler} from 'react-native-gesture-handler';
 import {SearchBy} from './Filters/SearchBy';
 import {SliderTrack} from './Slider';
 import {Title} from './Title';
+import {useStore} from '../store/BeerStore';
+import {MAX_ABV, MAX_EBC, MAX_IBU} from '../const/measurements';
 
-export const Filters = () => {
+interface FiltersProps {
+  toggleBottomSheet: () => void;
+}
+
+export const Filters: FC<FiltersProps> = ({toggleBottomSheet}) => {
+  const {filters, setFilters, call} = useStore();
+  const {abv_gt, ebc_gt, ibu_gt} = filters;
   const [search, setSearch] = useState('');
-  const [alcohol, setAlcohol] = useState(0);
-  const [ibu, setIbu] = useState(0);
-  const [ebc, setEbc] = useState(0);
+
+  const setABV = (v: number) => setFilters({abv_gt: v});
+  const setIBU = (v: number) => setFilters({ibu_gt: v});
+  const setEBC = (v: number) => setFilters({ebc_gt: v});
+
+  const handleOnShow = () => {
+    call(filters);
+    toggleBottomSheet();
+  };
 
   return (
     <NativeViewGestureHandler disallowInterruption={true}>
@@ -24,11 +38,22 @@ export const Filters = () => {
           <Title label="Filters" />
           <SliderTrack
             title="Alcohol volume"
-            volume={alcohol}
-            setVolume={setAlcohol}
+            max={MAX_ABV}
+            volume={abv_gt!}
+            setVolume={setABV}
           />
-          <SliderTrack title="IBU" volume={ibu} setVolume={setIbu} />
-          <SliderTrack title="EBC" volume={ebc} setVolume={setEbc} />
+          <SliderTrack
+            title="IBU"
+            max={MAX_IBU}
+            volume={ibu_gt!}
+            setVolume={setIBU}
+          />
+          <SliderTrack
+            title="EBC"
+            max={MAX_EBC}
+            volume={ebc_gt!}
+            setVolume={setEBC}
+          />
         </YStack>
         <YStack marginTop={12} paddingHorizontal={16}>
           <SearchBy />
@@ -62,7 +87,8 @@ export const Filters = () => {
             fontSize={20}
             backgroundColor={colorTokens.light.orange.orange9}
             borderColor={colorTokens.light.orange.orange10}
-            borderWidth={2}>
+            borderWidth={2}
+            onPress={handleOnShow}>
             Show
           </Button>
         </YStack>

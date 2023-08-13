@@ -5,11 +5,13 @@ import {darkColors, lightColors} from '@tamagui/themes';
 
 export function SliderTrack({
   title,
+  max,
   volume,
   setVolume,
   ...props
 }: SliderProps & {
   title: string;
+  max: number;
   volume: number;
   setVolume: (value: number) => void;
 }) {
@@ -21,7 +23,7 @@ export function SliderTrack({
       <XStack flex={1} alignItems="center" space="$2">
         <SimpleSlider
           width={200}
-          {...props}
+          {...{...props, max}}
           onValueChange={v => setVolume(v[0])}
         />
       </XStack>
@@ -29,9 +31,9 @@ export function SliderTrack({
   );
 }
 
-function SimpleSlider({children, ...props}: SliderProps) {
+function SimpleSlider({children, max, ...props}: SliderProps) {
   return (
-    <Slider defaultValue={[0]} max={100} step={1} {...props}>
+    <Slider defaultValue={[0]} max={max} step={1} {...props}>
       <Slider.Track backgroundColor={lightColors.gray8}>
         <Slider.TrackActive backgroundColor="orange" />
       </Slider.Track>

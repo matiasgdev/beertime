@@ -2,7 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import {darkColors} from '@tamagui/themes';
 import {BeerIcon} from 'lucide-react-native';
 
-import {FC, useMemo} from 'react';
+import {FC} from 'react';
 import React, {
   FlatList,
   SafeAreaView,
@@ -13,17 +13,16 @@ import React, {
 } from 'react-native';
 import Animated, {FadeInUp} from 'react-native-reanimated';
 import {Paragraph, XStack} from 'tamagui';
-import {getTotalIngredientsMap} from '../lib/getTotalIngredients';
 
 import {Beer} from '../models/Beer';
 import {useStore} from '../store/BeerStore';
+import {EmtpyState} from './EmptyState';
 import {Skeletons} from './SkeletonCard';
 import {Title} from './Title';
 
 const Item: FC<Beer> = beer => {
   const {id, name, image_url, volume, abv} = beer;
   const {navigate} = useNavigation();
-  const ingredientsMap = useMemo(() => getTotalIngredientsMap(beer), [beer]);
 
   const onSelect = () => {
     navigate('Details');
@@ -87,7 +86,7 @@ export const List = () => {
     <SafeAreaView style={styles.container}>
       {status === 'pending' ? (
         <Skeletons />
-      ) : (
+      ) : beers.length ? (
         <FlatList
           showsVerticalScrollIndicator={false}
           numColumns={2}
@@ -95,6 +94,8 @@ export const List = () => {
           renderItem={({item}) => <Item {...item} />}
           keyExtractor={item => item.id.toString()}
         />
+      ) : (
+        <EmtpyState />
       )}
     </SafeAreaView>
   );

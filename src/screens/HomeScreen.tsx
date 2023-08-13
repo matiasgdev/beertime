@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 import {ListFilter, ChevronsUpDown} from 'lucide-react-native';
 import {List} from '../components/List';
@@ -11,7 +12,7 @@ export const HomeScreen = () => {
   const $refSheet = useRef<BottomSheet>(null);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
       <View style={styles.filters}>
         <View style={styles.filtersButtons}>
           <Button
@@ -44,7 +45,11 @@ export const HomeScreen = () => {
       </View>
       <List />
       <BottomSheet ref={$refSheet} snapPoints={['1%', '65%']}>
-        <Filters />
+        <Filters
+          toggleBottomSheet={() => {
+            $refSheet.current?.close({duration: 500});
+          }}
+        />
       </BottomSheet>
     </SafeAreaView>
   );

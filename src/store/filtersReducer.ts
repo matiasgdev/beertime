@@ -44,17 +44,17 @@ export const filtersReducer = (
       return {...state, ebc_gt: payload.ebc_gt!};
     }
     case 'beer_name':
-      return {...state, ...defaultQuerySearch, beer_name: payload.beer_name!};
+      return {...state, ...defaultQuerySearch, ...payload};
     case 'yeast':
-      return {...state, ...defaultQuerySearch, beer_name: payload.beer_name!};
+      return {...state, ...defaultQuerySearch, ...payload};
     case 'hops': {
-      return {...state, ...defaultQuerySearch, beer_name: payload.beer_name!};
+      return {...state, ...defaultQuerySearch, ...payload};
     }
     case 'malt': {
-      return {...state, ...defaultQuerySearch, beer_name: payload.beer_name!};
+      return {...state, ...defaultQuerySearch, ...payload};
     }
     case 'food': {
-      return {...state, ...defaultQuerySearch, beer_name: payload.beer_name!};
+      return {...state, ...defaultQuerySearch, ...payload};
     }
     case 'reset': {
       return defaultFilters as BeerParams;

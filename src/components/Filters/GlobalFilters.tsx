@@ -64,6 +64,7 @@ export const GlobalFilters: FC<GlobalFiltersProps> = ({toggleBottomSheet}) => {
           <SearchBy onChange={setKeySearch} />
         </YStack>
         <InputSearch
+          keyboard={true}
           {...{query, setQuery}}
           marginTop={16}
           marginHorizontal={16}

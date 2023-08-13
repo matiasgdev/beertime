@@ -6,6 +6,7 @@ import {darkColors, lightColors} from '@tamagui/themes';
 export function SliderTrack({
   title,
   max,
+  value,
   volume,
   setVolume,
   ...props
@@ -23,7 +24,7 @@ export function SliderTrack({
       <XStack flex={1} alignItems="center" space="$2">
         <Slide
           width={200}
-          {...{...props, max}}
+          {...{...props, max, value: [volume]}}
           onValueChange={v => setVolume(v[0])}
         />
       </XStack>
@@ -31,9 +32,9 @@ export function SliderTrack({
   );
 }
 
-function Slide({children, max, ...props}: SliderProps) {
+function Slide({children, max, value, ...props}: SliderProps) {
   return (
-    <Slider defaultValue={[0]} max={max} step={1} {...props}>
+    <Slider value={value} max={max} step={1} {...props}>
       <Slider.Track backgroundColor={lightColors.gray8}>
         <Slider.TrackActive backgroundColor="orange" />
       </Slider.Track>

@@ -2,24 +2,28 @@ import {useNavigation} from '@react-navigation/native';
 import {darkColors} from '@tamagui/themes';
 import {BeerIcon} from 'lucide-react-native';
 
-import {FC, PropsWithChildren} from 'react';
+import {FC, useMemo} from 'react';
 import React, {
   FlatList,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   TouchableWithoutFeedback,
-  View,
   Image,
 } from 'react-native';
+import Animated, {FadeInUp} from 'react-native-reanimated';
 import {Paragraph, XStack} from 'tamagui';
+import {getTotalIngredientsMap} from '../lib/getTotalIngredients';
 
 import {Beer} from '../models/Beer';
 import {useStore} from '../store/BeerStore';
+import {Skeletons} from './SkeletonCard';
 import {Title} from './Title';
 
-const Item: FC<PropsWithChildren<Beer>> = ({name, image_url, volume, abv}) => {
+const Item: FC<Beer> = beer => {
+  const {id, name, image_url, volume, abv} = beer;
   const {navigate} = useNavigation();
+  const ingredientsMap = useMemo(() => getTotalIngredientsMap(beer), [beer]);
 
   const onSelect = () => {
     navigate('Details');
@@ -27,7 +31,10 @@ const Item: FC<PropsWithChildren<Beer>> = ({name, image_url, volume, abv}) => {
 
   return (
     <TouchableWithoutFeedback onPress={onSelect}>
-      <View style={styles.card}>
+      <Animated.View
+        entering={FadeInUp}
+        style={styles.card}
+        sharedTransitionTag={`card-${id}`}>
         <Title
           label={name}
           paddingHorizontal={4}
@@ -69,22 +76,26 @@ const Item: FC<PropsWithChildren<Beer>> = ({name, image_url, volume, abv}) => {
             .at(0)
             ?.toUpperCase()}`}</Paragraph>
         </XStack>
-      </View>
+      </Animated.View>
     </TouchableWithoutFeedback>
   );
 };
 
 export const List = () => {
-  const {beers} = useStore();
+  const {beers, status} = useStore();
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        numColumns={2}
-        data={beers}
-        renderItem={({item}) => <Item {...item} />}
-        keyExtractor={item => item.id.toString()}
-      />
+      {status === 'pending' ? (
+        <Skeletons />
+      ) : (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          numColumns={2}
+          data={beers}
+          renderItem={({item}) => <Item {...item} />}
+          keyExtractor={item => item.id.toString()}
+        />
+      )}
     </SafeAreaView>
   );
 };

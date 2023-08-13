@@ -8,7 +8,7 @@ import {Filters} from '../components/Filters';
 import {Button} from 'tamagui';
 
 export const HomeScreen = () => {
-  const bottomSheetRef = useRef<BottomSheet>(null);
+  const $refSheet = useRef<BottomSheet>(null);
 
   return (
     <SafeAreaView>
@@ -23,11 +23,10 @@ export const HomeScreen = () => {
             icon={<ChevronsUpDown color="#fff" size={22} />}
             alignItems="center"
             onPress={() => {
-              bottomSheetRef.current?.expand();
+              $refSheet.current?.expand();
             }}>
             Sorty by
           </Button>
-
           <Button
             color="white"
             backgroundColor="black"
@@ -37,14 +36,14 @@ export const HomeScreen = () => {
             icon={<ListFilter color="#fff" size={22} />}
             alignItems="center"
             onPress={() => {
-              bottomSheetRef.current?.expand();
+              $refSheet.current?.expand();
             }}>
             Filter
           </Button>
         </View>
       </View>
       <List />
-      <BottomSheet ref={bottomSheetRef} snapPoints={['1%', '65%']}>
+      <BottomSheet ref={$refSheet} snapPoints={['1%', '65%']}>
         <Filters />
       </BottomSheet>
     </SafeAreaView>

@@ -19,7 +19,7 @@ export interface Beer {
     fermentation: {temp: Measurement};
     twist: string | null;
   };
-  ingredient: {
+  ingredients: {
     malt: Ingredient[];
     hops: Ingredient[];
     yeast: string;
@@ -34,7 +34,7 @@ interface Measurement {
   unit: string;
 }
 
-interface Ingredient {
+export interface Ingredient {
   name: string;
   amount: Measurement;
   add?: string;

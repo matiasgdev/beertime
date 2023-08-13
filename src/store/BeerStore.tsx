@@ -5,12 +5,14 @@ import React, {
   useEffect,
   useReducer,
 } from 'react';
+import {Skeletons} from '../components/SkeletonCard';
 import {useAsync} from '../hooks/useAsync';
 import {Beer} from '../models/Beer';
 import {BeerParams} from '../models/BeerParams';
 import {getBeers} from '../services/get-beers';
 
 interface BeerStoreState {
+  status: 'idle' | 'pending' | 'resolved' | 'rejected';
   beers: Beer[];
   filters: Partial<BeerParams>;
   setFilters: (newFilter: Partial<BeerParams>) => void;
@@ -24,7 +26,7 @@ const filterReducer = (
 const Beers = createContext<BeerStoreState | null>(null);
 
 export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
-  const {data: beers, run} = useAsync<Beer[]>([]);
+  const {data: beers, run, status} = useAsync<Beer[]>([]);
   const [filters, setFilters] = useReducer(filterReducer, {});
 
   useEffect(() => {
@@ -35,6 +37,7 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
   return (
     <Beers.Provider
       value={{
+        status,
         beers,
         filters,
         setFilters,

@@ -6,15 +6,32 @@ buildscript {
         minSdkVersion = 21
         compileSdkVersion = 33
         targetSdkVersion = 33
-
-        // We use NDK 23 which has both M1 support and is the side-by-side NDK version from AGP.
         ndkVersion = "23.1.7779620"
+        kotlinVersion = '1.5.30'
+    }
+    defaultConfig {
+        versionCode 1
+        versionName "1.0"
+        testBuildType System.getProperty('testBuildType', 'debug')
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFile "${rootProject.projectDir}/../node_modules/detox/android/detox/proguard-rules-app.pro"
+        }
     }
     repositories {
         google()
         mavenCentral()
+        maven {
+            url("$rootDir/../node_modules/detox/Detox-android")
+        }
     }
     dependencies {
+        androidTestImplementation('com.wix:detox:+')
+        implementation 'androidx.appcompat:appcompat:1.1.0'
         classpath("com.android.tools.build:gradle:7.3.1")
         classpath("com.facebook.react:react-native-gradle-plugin")
     }

@@ -25,6 +25,7 @@ export function useAsync<T = Beer[]>(initialState: T, opts: Options<T> = {}) {
     ...defaultInitialState,
     data: initialState,
   });
+  const refOpts = useRef(opts);
   const [{status, data, error}, setState] = useReducer(
     (s: State<T>, a: Partial<State<T>>) => ({...s, ...a}),
     initialStateRef.current,
@@ -43,6 +44,8 @@ export function useAsync<T = Beer[]>(initialState: T, opts: Options<T> = {}) {
     () => setState(initialStateRef.current),
     [setState],
   );
+
+  refOpts.current = opts;
 
   const run = useCallback(
     (promise: Promise<T>) => {

@@ -21,7 +21,7 @@ const Beers = createContext<BeerStoreState | null>(null);
 
 export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
   const [beers, setBeers] = useState<Beer[]>([]);
-  const [{beer_name, yeast, hops, malt, food, page, ...filters}, dispatch] =
+  const [{beer_name, yeast, hops, malt, food, ...filters}, dispatch] =
     useReducer(filtersReducer, defaultFilters as BeerParams);
   const [globalQuery, setGlobalQuery] = useState('');
 
@@ -29,7 +29,7 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
 
   const {run, status, data, error} = useAsync<Beer[]>([], {
     onSuccess: beers => {
-      if (page === 1) {
+      if (filters.page === 1) {
         return setBeers(beers);
       }
       setBeers(previousBeers => [...previousBeers, ...beers]);
@@ -48,7 +48,7 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
   useEffect(() => {
     run(getBeers(filters));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [filters.page]);
 
   const filteredBeers = useMemo(
     () => filterByName(beers, debouncedQuery),

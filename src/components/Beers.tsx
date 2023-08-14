@@ -1,10 +1,14 @@
-import {ActivityIndicator, StyleSheet} from 'react-native';
+import React, {
+  FlatList,
+  SafeAreaView,
+  Dimensions,
+  StyleSheet,
+} from 'react-native';
 import {darkColors, lightColors} from '@tamagui/themes';
 import {BeerIcon, ShoppingCart} from 'lucide-react-native';
 
-import React, {FlatList, SafeAreaView, Dimensions} from 'react-native';
 import Animated, {FadeInUp} from 'react-native-reanimated';
-import {Paragraph, XStack, Image, Button} from 'tamagui';
+import {Paragraph, XStack, Image} from 'tamagui';
 import {getVolumeUnit} from '../lib/getVolumeUnit';
 
 import {useStore} from '../store/BeerStore';
@@ -12,26 +16,10 @@ import {EmtpyState} from './EmptyState';
 import {Skeletons} from './common/SkeletonCard';
 import {Title} from './common/Title';
 import {Beer} from '../models/Beer';
+import {NextCursorButton} from './NextCursorButton';
 
 export const Beers = () => {
-  const {beers, status, error, dispatch, reachLimit, globalQuery} = useStore();
-
-  const footer =
-    reachLimit || globalQuery ? null : (
-      <Button
-        disabled={status === 'pending' || status === 'refetching'}
-        marginTop={16}
-        minWidth={110}
-        onPress={() => {
-          dispatch({type: 'set_page'});
-        }}>
-        {status === 'refetching' ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          'Load more'
-        )}
-      </Button>
-    );
+  const {beers, status, error} = useStore();
 
   if (status === 'rejected') {
     // fire error boundary
@@ -55,7 +43,7 @@ export const Beers = () => {
           data={beers}
           renderItem={({item}) => <Item {...item} />}
           keyExtractor={item => item.id.toString()}
-          ListFooterComponent={footer}
+          ListFooterComponent={<NextCursorButton />}
           refreshing={status === 'refetching'}
         />
       ) : (

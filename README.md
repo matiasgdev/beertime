@@ -1,5 +1,24 @@
 # Beertime
 
-![](./assets/images/1.png)
+<img src="./assets/images/1.png" width="170" />
+<img src="./assets/images/1.png" width="170" />
 
-![](./assets/images/2.png)
+## Quick start 🚀
+
+Install packages
+
+```
+  yarn (or `npm install` if you prefer npm)
+```
+
+Run metro
+
+```
+  yarn start
+```
+
+Run android
+
+```
+  yarn android
+```

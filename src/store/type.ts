@@ -14,7 +14,7 @@ export interface BeerStoreState {
   dispatch: React.Dispatch<
     {
       type:
-        | 'set_page'
+        | 'set_next_page'
         | 'yeast'
         | 'hops'
         | 'malt'

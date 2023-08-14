@@ -1,7 +1,7 @@
 # Beertime
 
 <img src="./assets/images/1.png" width="170" />
-<img src="./assets/images/1.png" width="170" />
+<img src="./assets/images/2.png" width="170" />
 
 ## Quick start 🚀
 

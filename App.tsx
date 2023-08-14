@@ -1,13 +1,13 @@
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React from 'react';
-import {Details} from './src/screens/Details';
-import {HomeScreen} from './src/screens/HomeScreen';
 import 'react-native-gesture-handler';
-
-import {BeersProvider} from './src/store/BeerStore';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {TamaguiProvider} from 'tamagui';
+
+import {BeersProvider} from './src/store/BeerStore';
+import {HomeScreen} from './src/screens/HomeScreen';
+
 import tamaguiCfg from './tamagui.config';
 
 const Stack = createNativeStackNavigator();
@@ -24,7 +24,6 @@ function App(): JSX.Element {
                 name="Home"
                 component={HomeScreen}
               />
-              <Stack.Screen name="Details" component={Details} />
             </Stack.Navigator>
           </BeersProvider>
         </TamaguiProvider>

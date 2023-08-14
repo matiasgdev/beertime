@@ -1,8 +1,6 @@
 import React, {
   createContext,
-  Dispatch,
   PropsWithChildren,
-  SetStateAction,
   useCallback,
   useContext,
   useEffect,
@@ -17,48 +15,21 @@ import {Beer} from '../models/Beer';
 import {BeerParams} from '../models/BeerParams';
 import {getBeers} from '../services/get-beers';
 import {defaultFilters, filtersReducer, PAGE_OFFSET} from './filtersReducer';
-
-interface BeerStoreState {
-  status: 'idle' | 'pending' | 'resolved' | 'rejected' | 'refetching';
-  beers: Beer[];
-  filters: Partial<BeerParams>;
-  query: string;
-  globalQuery: string;
-  setGlobalQuery: Dispatch<SetStateAction<string>>;
-  refetch: (filtres: Partial<BeerParams>) => void;
-  dispatch: React.Dispatch<
-    {
-      type:
-        | 'set_page'
-        | 'yeast'
-        | 'hops'
-        | 'malt'
-        | 'food'
-        | 'abv'
-        | 'ibu'
-        | 'ebc'
-        | 'beer_name'
-        | 'reset';
-    } & Partial<BeerParams>
-  >;
-  reachLimit: boolean;
-}
+import {BeerStoreState} from './type';
 
 const Beers = createContext<BeerStoreState | null>(null);
 
 export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
   const [beers, setBeers] = useState<Beer[]>([]);
+  const [{beer_name, yeast, hops, malt, food, page, ...filters}, dispatch] =
+    useReducer(filtersReducer, defaultFilters as BeerParams);
   const [globalQuery, setGlobalQuery] = useState('');
+
   const debouncedQuery = useDebouncedValue(globalQuery, 500);
 
-  const [filters, dispatch] = useReducer(
-    filtersReducer,
-    defaultFilters as BeerParams,
-  );
-
-  const {run, status, data} = useAsync<Beer[]>([], {
+  const {run, status, data, error} = useAsync<Beer[]>([], {
     onSuccess: beers => {
-      if (filters.page === 1) {
+      if (page === 1) {
         return setBeers(beers);
       }
       setBeers(previousBeers => [...previousBeers, ...beers]);
@@ -67,7 +38,6 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
 
   const reachLimit = Boolean(data.length < PAGE_OFFSET);
 
-  const {beer_name, yeast, hops, malt, food, page} = filters;
   const query = beer_name || yeast || hops || malt || food;
 
   const refetch = useCallback((params: Partial<BeerParams>) => {
@@ -90,6 +60,7 @@ export const BeersProvider: React.FC<PropsWithChildren> = ({children}) => {
       value={{
         status: beers.length && status === 'pending' ? 'refetching' : status,
         beers: filteredBeers,
+        error,
         filters,
         dispatch,
         refetch,

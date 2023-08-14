@@ -59,7 +59,7 @@ export function useAsync<T = Beer[]>(initialState: T, opts: Options<T> = {}) {
           return data;
         },
         (error: Error) => {
-          if ((error as any).__CANCEL__) {
+          if ((error as any)?.__CANCEL__) {
             return opts.onCancel?.();
           }
           setError(error);

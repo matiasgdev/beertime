@@ -14,7 +14,7 @@ import {Title} from './common/Title';
 import {Beer} from '../models/Beer';
 
 export const Beers = () => {
-  const {beers, status, dispatch, reachLimit, globalQuery} = useStore();
+  const {beers, status, error, dispatch, reachLimit, globalQuery} = useStore();
 
   const footer =
     reachLimit || globalQuery ? null : (
@@ -32,6 +32,11 @@ export const Beers = () => {
         )}
       </Button>
     );
+
+  if (status === 'rejected') {
+    // fire error boundary
+    throw error;
+  }
 
   return (
     <SafeAreaView style={styles.container}>

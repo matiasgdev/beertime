@@ -2,7 +2,7 @@
 import React, {SafeAreaView, StatusBar} from 'react-native';
 import {SlidersHorizontalIcon} from 'lucide-react-native';
 import {Beers} from '../components/Beers';
-import {useRef, useState} from 'react';
+import {useRef} from 'react';
 
 import BottomSheet from '@gorhom/bottom-sheet';
 import {GlobalFilters} from '../components/filters/GlobalFilters';
@@ -10,6 +10,8 @@ import {Button, XStack} from 'tamagui';
 import {darkColors} from '@tamagui/themes';
 import {InputSearch} from '../components/common/InputSearch';
 import {useStore} from '../store/BeerStore';
+import {ErrorBoundary} from '../components/ErrorBoundary';
+import {Error} from '../components/common/Error';
 
 export const HomeScreen = () => {
   const {globalQuery, setGlobalQuery} = useStore();
@@ -42,7 +44,11 @@ export const HomeScreen = () => {
           }}
         />
       </XStack>
-      <Beers />
+      <ErrorBoundary
+        onError={console.error}
+        fallback={props => <Error {...props} />}>
+        <Beers />
+      </ErrorBoundary>
       <BottomSheet ref={$refSheet} snapPoints={['1%', '65%']}>
         <GlobalFilters
           toggleBottomSheet={() => {
